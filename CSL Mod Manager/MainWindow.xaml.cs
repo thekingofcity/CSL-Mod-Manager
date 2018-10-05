@@ -86,12 +86,33 @@ namespace CSL_Mod_Manager
             {
                 string id = SelectedRow.Row.ItemArray[0].ToString();
                 string path = Environment.CurrentDirectory + "\\Image\\" + id + ".jpg";
-                if (File.Exists(path) && !AsyncPic.IsFileInUse(path))
+                if (File.Exists(path) && !ML.IsFileInUse(path))
                 {
                     BitmapImage image = new BitmapImage(new Uri(path));
                     Preview.Source = image;
                 }
             }
+        }
+
+        private void Delete_Directory_Click(object sender, RoutedEventArgs e)
+        {
+            // https://www.codeproject.com/Questions/119505/Get-Selected-items-in-a-WPF-datagrid
+            int count = DataGridView1.SelectedItems.Count;
+            string[] ids = new string[count];
+            for (int i = 0; i < count; i++)
+            {
+                DataRowView SelectedRow = (DataRowView)DataGridView1.SelectedItems[i];
+                ids[i] = SelectedRow.Row.ItemArray[0].ToString();
+            }
+            ML.DeleteDirectory(ids);
+
+            dt = ML.GetDB();
+            DataGridView1.ItemsSource = dt.AsDataView();
+        }
+
+        private void Label_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/thekingofcity/CSL-Mod-Manager");
         }
     }
 }
