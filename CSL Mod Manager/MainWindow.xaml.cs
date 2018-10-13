@@ -30,6 +30,7 @@ namespace CSL_Mod_Manager
         {
             InitializeComponent();
             ML = new MainLogic();
+            RefreshTable();
         }
         
         private void BtnSelectDir(object sender, RoutedEventArgs e)
@@ -58,10 +59,23 @@ namespace CSL_Mod_Manager
 
         private void BtnRefreshTable(object sender, RoutedEventArgs e)
         {
-            dt = ML.GetDB();
-            DataGridView1.ItemsSource = dt.AsDataView();
+            RefreshTable();
         }
-        
+
+        private void RefreshTable(string search=null)
+        {
+            if (search != null)
+            {
+                dt = ML.GetSpecificRowsFromDB(SeachBox.Text);
+                DataGridView1.ItemsSource = dt.AsDataView();
+            }
+            else
+            {
+                dt = ML.GetDB();
+                DataGridView1.ItemsSource = dt.AsDataView();
+            }
+        }
+
         private void BtnDownloadandAnalyse(object sender, RoutedEventArgs e)
         {
             // https://www.codeproject.com/Questions/119505/Get-Selected-items-in-a-WPF-datagrid
@@ -74,8 +88,7 @@ namespace CSL_Mod_Manager
             }
             ML.DownloadandAnalyse(ids, Environment.CurrentDirectory);
 
-            dt = ML.GetDB();
-            DataGridView1.ItemsSource = dt.AsDataView();
+            RefreshTable();
         }
 
         private void DataGridView1_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -106,13 +119,21 @@ namespace CSL_Mod_Manager
             }
             ML.DeleteDirectory(ids);
 
-            dt = ML.GetDB();
-            DataGridView1.ItemsSource = dt.AsDataView();
+            RefreshTable();
         }
 
         private void Label_MouseDown(object sender, MouseButtonEventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/thekingofcity/CSL-Mod-Manager");
+        }
+
+        private void SeachBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (ML != null)
+            {
+                // this func runs before ML initialize
+                RefreshTable(SeachBox.Text);
+            }
         }
     }
 }

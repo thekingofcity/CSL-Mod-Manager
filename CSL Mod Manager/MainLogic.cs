@@ -125,6 +125,13 @@ namespace CSL_Mod_Manager
             return dt;
         }
 
+        public DataTable GetSpecificRowsFromDB(string search)
+        {
+            DataTable dt = new DataTable();
+            db.GetSpecificMods(dt, search);
+            return dt;
+        }
+
         public void DownloadandAnalyse(string[] ids, string localPath)
         {
             // https://bbs.csdn.net/topics/220064751

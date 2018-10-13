@@ -109,5 +109,13 @@ namespace database
             var da = new SQLiteDataAdapter(sqlite_cmd, sqlite_conn);
             da.Fill(dt);
         }
+
+        public void GetSpecificMods(DataTable dt, string search)
+        {
+            search = search.Replace("'", "''");
+            string sqlite_cmd = String.Format("SELECT * FROM mods where Title like '%{0}%' order by id;", search);
+            var da = new SQLiteDataAdapter(sqlite_cmd, sqlite_conn);
+            da.Fill(dt);
+        }
     }
 }
