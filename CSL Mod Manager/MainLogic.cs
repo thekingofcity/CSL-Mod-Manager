@@ -18,25 +18,38 @@ namespace CSL_Mod_Manager
 
         public MainLogic()
         {
+            InitializeDB(false);
             db = new database.Database();
         }
 
-        private void InitializeDB()
+        private void InitializeDB(Boolean overrideDB)
         {
-            if (File.Exists(@"database.sqlite"))
+            Boolean fileExist = File.Exists(@"database.sqlite");
+            if (overrideDB && fileExist)
             {
+                // full initialize
+                // delete db file and recreate
                 db.CloseDB();
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 File.Delete(@"database.sqlite");
+
                 db = new database.Database();
+                db.CreateTable();
             }
-            db.CreateTable();
+            else if(!overrideDB && !fileExist)
+            {
+                // run for the first time
+                // create db file and initialize
+
+                db = new database.Database();
+                db.CreateTable();
+            }
         }
 
         public void RefreshDB(string workshopLocation)
         {
-            InitializeDB();  // drop db
+            InitializeDB(true);  // drop db
             db.UpdateWorkshopLocation(workshopLocation);
             try
             {
@@ -45,9 +58,15 @@ namespace CSL_Mod_Manager
                 // Get only subdirectories that contain the letter "p."
                 DirectoryInfo[] dirs = di.GetDirectories("*");
 
+                int ModSize = dirs.Length;
+                int index = 0;
+
                 foreach (DirectoryInfo diNext in dirs)
                 {
+                    // TODO: yield index back to UI, update in time
+                    index++;
                     db.InsertNewMod(long.Parse(diNext.Name), GetFilesSize(diNext));
+                    //yield return index;
                 }
             }
             catch (Exception e)

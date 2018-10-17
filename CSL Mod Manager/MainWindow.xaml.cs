@@ -54,6 +54,8 @@ namespace CSL_Mod_Manager
                 var workshopLocation = dlg.FileName;
                 // Do something with selected folder string
                 ML.RefreshDB(workshopLocation);
+                
+                RefreshTable();
             }
         }
 
