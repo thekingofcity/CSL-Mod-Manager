@@ -136,10 +136,6 @@ namespace CSL_Mod_Manager
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // This func will be invoked before db initialize
-            if (SearchBox.Text == @"Search Here")
-                return;
-
             RefreshTable(SearchBox.Text);
         }
 
