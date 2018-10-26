@@ -80,18 +80,11 @@ namespace CSL_Mod_Manager
                 var SelectedRow = (DataRowView)DataGridView1.SelectedItems[i];
                 ids[i] = SelectedRow.Row.ItemArray[0].ToString();
             }
-
-            DownloadAndAnalyzeArgs args;
-            args.ids = ids;
-            args.localPath = Environment.CurrentDirectory;
-            // https://blog.csdn.net/yl2isoft/article/details/11711833
+            
             Task.Run(() =>
             {
-                DownloadAndAnalyze(args);
+                DownloadAndAnalyze(ids, Environment.CurrentDirectory);
             });
-            // DownloadAndAnalyze(ids, Environment.CurrentDirectory);
-
-            // RefreshTable();
         }
 
         private void DataGridView1_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -102,7 +95,7 @@ namespace CSL_Mod_Manager
             {
                 var id = SelectedRow.Row.ItemArray[0].ToString();
                 var path = $@"{Environment.CurrentDirectory}\Image\{id}.jpg";
-                if (File.Exists(path) && !Utils.Util.IsFileInUse(path))
+                if (File.Exists(path))
                 {
                     var image = new BitmapImage(new Uri(path));
                     Preview.Source = image;
@@ -243,12 +236,8 @@ namespace CSL_Mod_Manager
             return dt;
         }
 
-        private void DownloadAndAnalyze(object argsObj)
+        private void DownloadAndAnalyze(string[] ids, string localPath)
         {
-            var args = (DownloadAndAnalyzeArgs)argsObj;
-            var ids = args.ids;
-            var localPath = args.localPath;
-
             // https://www.cnblogs.com/ibeisha/p/threadpool.html
             ThreadPool.SetMinThreads(2, 1);
             ThreadPool.SetMaxThreads(8, 4);
@@ -308,8 +297,6 @@ namespace CSL_Mod_Manager
 
                 var matchCollection = Regex.Matches(screenshots, pattern);
                 screenshots = matchCollection.Count == 1 ? matchCollection[0].Value : string.Empty;
-                //foreach (Match match in Regex.Matches(screenshots, pattern))
-                //    Console.WriteLine(match.Value);
 
                 _db.UpdateMod(ids[i], title, tags, description, screenshots);
 

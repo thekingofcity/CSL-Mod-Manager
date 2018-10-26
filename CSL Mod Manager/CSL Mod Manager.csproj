@@ -133,7 +133,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DownloadAndAnalyzeArgs.cs" />
     <Compile Include="DownloadPicArgv.cs" />
     <Compile Include="Utils\Util.cs" />
     <Page Include="MainWindow.xaml">
