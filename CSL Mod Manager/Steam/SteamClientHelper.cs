@@ -61,6 +61,28 @@ namespace CSL_Mod_Manager.Steam
             return Process.GetProcessesByName(@"Steam").Length > 0;
         }
 
+        public static uint? GetActiveUserSteamId3()
+        {
+            uint? steamId3 = null;
+            try
+            {
+                using (var registryKey = Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam\ActiveProcess"))
+                {
+                    var str = registryKey?.GetValue(@"ActiveUser").ToString();
+                    if (uint.TryParse(str, out var tempUint))
+                    {
+                        steamId3 = tempUint;
+                    }
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+
+            return steamId3;
+        }
+
         private static string GetPathFromRegistry()
         {
             string path;
