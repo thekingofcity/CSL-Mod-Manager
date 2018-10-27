@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSL_Mod_Manager.Steam;
+using System;
 using System.IO;
 using System.Net;
 using System.Windows.Forms;
@@ -36,7 +37,7 @@ namespace CSL_Mod_Manager.Utils
 
                 inUse = false;
             }
-            catch
+            catch (IOException)
             {
                 // ignored
             }
@@ -105,5 +106,16 @@ namespace CSL_Mod_Manager.Utils
             }
         }
 
+        public static string GetWorkShopDir(int appid)
+        {
+            foreach (var k in SteamClientHelper.GetAllAppidInWorkshop())
+            {
+                if (k.Key == appid)
+                {
+                    return Path.Combine(k.Value, $@"{k.Key}");
+                }
+            }
+            return null;
+        }
     }
 }

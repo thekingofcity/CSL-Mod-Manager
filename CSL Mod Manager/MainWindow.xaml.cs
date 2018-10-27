@@ -20,6 +20,7 @@ namespace CSL_Mod_Manager
     /// </summary>
     public partial class MainWindow
     {
+        private const int DefaultAppid = 255710;
         // MainLogic ML;
         private DataTable _dt;
         private Database _db;
@@ -32,23 +33,13 @@ namespace CSL_Mod_Manager
         public MainWindow()
         {
             InitializeComponent();
-            // ML = new MainLogic();
-            InitializeDB(false);
-            _db = new Database();
-            RefreshTable();
+            InitializeDB();
         }
 
         private void BtnSelectDir(object sender, RoutedEventArgs e)
         {
             var workshopLocation = Utils.Util.SelectDir();
-            if (Directory.Exists(workshopLocation))
-            {
-                // https://blog.csdn.net/yl2isoft/article/details/11711833
-                Task.Run(() =>
-                {
-                    RefreshDB(workshopLocation);
-                });
-            }
+            LoadDB(workshopLocation);
         }
 
         private void BtnRefreshTable(object sender, RoutedEventArgs e)
@@ -80,7 +71,7 @@ namespace CSL_Mod_Manager
                 var SelectedRow = (DataRowView)DataGridView1.SelectedItems[i];
                 ids[i] = SelectedRow.Row.ItemArray[0].ToString();
             }
-            
+
             Task.Run(() =>
             {
                 DownloadAndAnalyze(ids, Environment.CurrentDirectory);
@@ -132,19 +123,48 @@ namespace CSL_Mod_Manager
             RefreshTable(SearchBox.Text);
         }
 
+        #endregion
+
+        #region MainLogic
+
+        private void LoadDB(string workshopLocation)
+        {
+            if (Directory.Exists(workshopLocation))
+            {
+                // https://blog.csdn.net/yl2isoft/article/details/11711833
+                Task.Run(() =>
+                {
+                    RefreshDB(workshopLocation);
+                });
+            }
+        }
+
         private void StatusUpdate(string status)
         {
             Status.Content = status;
         }
 
-        #endregion
-
-        #region MainLogic
-
-        private void InitializeDB(bool overrideDB)
+        private void InitializeDB()
         {
             var fileExist = File.Exists(@"database.sqlite");
-            if (overrideDB && fileExist)
+            if (!fileExist)
+            {
+                _db = new Database();
+                _db.CreateTable();
+                RefreshTable();
+                LoadDB(Utils.Util.GetWorkShopDir(DefaultAppid));
+            }
+            else
+            {
+                _db = new Database();
+                RefreshTable();
+            }
+        }
+
+        private void OverrideDB()
+        {
+            var fileExist = File.Exists(@"database.sqlite");
+            if (fileExist)
             {
                 // full initialize
                 // delete db file and recreate
@@ -156,20 +176,12 @@ namespace CSL_Mod_Manager
                 _db = new Database();
                 _db.CreateTable();
             }
-            else if (!overrideDB && !fileExist)
-            {
-                // run for the first time
-                // create db file and initialize
-
-                _db = new Database();
-                _db.CreateTable();
-            }
         }
 
         private void RefreshDB(object workshopLocationObj)
         {
             var workshopLocation = (string)workshopLocationObj;
-            InitializeDB(true);  // drop db
+            OverrideDB();  // drop db
             _db.UpdateWorkshopLocation(workshopLocation);
             try
             {

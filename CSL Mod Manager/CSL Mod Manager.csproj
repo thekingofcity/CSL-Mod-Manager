@@ -134,6 +134,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DownloadPicArgv.cs" />
+    <Compile Include="Steam\SteamClientHelper.cs" />
+    <Compile Include="Steam\VdfHelper.cs" />
     <Compile Include="Utils\Util.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
