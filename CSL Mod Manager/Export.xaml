@@ -1,0 +1,20 @@
+﻿<Window x:Class="CSL_Mod_Manager.Export"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CSL_Mod_Manager"
+        mc:Ignorable="d"
+        Title="Export" Height="450" Width="800">
+    <Grid>
+        <Label Content="Where is the save?" HorizontalAlignment="Left" Margin="10,10,0,0" Height="26" VerticalAlignment="Top"/>
+        <Grid Margin="10,41,482,0" Height="30" VerticalAlignment="Top">
+            <RadioButton x:Name="SteamCloudSave" Content="Steam Cloud Save" HorizontalAlignment="Left" Margin="10,10,-24,0" VerticalAlignment="Top" Checked="SteamCloudSave_Checked"/>
+            <RadioButton Content="AppData" HorizontalAlignment="Left" Margin="129,10,0,0" VerticalAlignment="Top" IsEnabled="False"/>
+        </Grid>
+        <ListBox Margin="10,0,482,10" Height="333" VerticalAlignment="Bottom"/>
+        <TextBox Margin="315,49,38,347" TextWrapping="Wrap" Text=""/>
+        <Button Content="..." Margin="759,0,10,351" VerticalAlignment="Bottom"/>
+
+    </Grid>
+</Window>

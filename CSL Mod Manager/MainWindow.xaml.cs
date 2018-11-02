@@ -350,5 +350,11 @@ namespace CSL_Mod_Manager
         }
 
         #endregion
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Export export = new Export();
+            export.Show();
+        }
     }
 }
