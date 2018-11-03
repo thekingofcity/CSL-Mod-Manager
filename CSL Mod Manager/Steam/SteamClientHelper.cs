@@ -83,7 +83,7 @@ namespace CSL_Mod_Manager.Steam
             return steamId3;
         }
 
-        private static string GetPathFromRegistry()
+        public static string GetPathFromRegistry()
         {
             string path;
             try

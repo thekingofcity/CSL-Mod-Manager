@@ -20,10 +20,10 @@ namespace CSL_Mod_Manager
     /// </summary>
     public partial class MainWindow
     {
-        private const int DefaultAppid = 255710;
+        public const int DefaultAppid = 255710;
         // MainLogic ML;
         private DataTable _dt;
-        private Database _db;
+        public Database _db;
 
         // Delegates to be used in placing jobs onto the Dispatcher.
         private delegate void AsyncSelectDirUIDelegate(string progress);
@@ -247,7 +247,7 @@ namespace CSL_Mod_Manager
             _db.GetSpecificMods(dt, search);
             return dt;
         }
-
+        
         private void DownloadAndAnalyze(string[] ids, string localPath)
         {
             // https://www.cnblogs.com/ibeisha/p/threadpool.html
@@ -354,6 +354,9 @@ namespace CSL_Mod_Manager
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Export export = new Export();
+            // MultiThread variable access
+            // http://www.cnblogs.com/hellohxs/p/9528505.html
+            export.getWorkshopLocationHandler = _db.GetWorkshopLocation;
             export.Show();
         }
     }

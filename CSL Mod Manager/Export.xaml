@@ -8,13 +8,13 @@
         Title="Export" Height="450" Width="800">
     <Grid>
         <Label Content="Where is the save?" HorizontalAlignment="Left" Margin="10,10,0,0" Height="26" VerticalAlignment="Top"/>
-        <Grid Margin="10,41,482,0" Height="30" VerticalAlignment="Top">
+        <Grid Margin="10,40,10,0" Height="32" VerticalAlignment="Top">
             <RadioButton x:Name="SteamCloudSave" Content="Steam Cloud Save" HorizontalAlignment="Left" Margin="10,10,-24,0" VerticalAlignment="Top" Checked="SteamCloudSave_Checked"/>
             <RadioButton Content="AppData" HorizontalAlignment="Left" Margin="129,10,0,0" VerticalAlignment="Top" IsEnabled="False"/>
+            <RadioButton x:Name="CustomLocation" Content="Custom Location" HorizontalAlignment="Left" Margin="200,10,0,0" VerticalAlignment="Top" IsEnabled="False" Checked="CustomLocation_Checked"/>
         </Grid>
-        <ListBox Margin="10,0,482,10" Height="333" VerticalAlignment="Bottom"/>
-        <TextBox Margin="315,49,38,347" TextWrapping="Wrap" Text=""/>
-        <Button Content="..." Margin="759,0,10,351" VerticalAlignment="Bottom"/>
+        <ListBox x:Name="SaveListBox" Margin="10,0,0,10.5" Height="335" VerticalAlignment="Bottom" SelectionMode="Multiple" HorizontalAlignment="Left" Width="300"/>
+        <Button x:Name="ExportButton" Content="Export" Margin="710,392,10,10.5" Click="ExportButton_Click"/>
 
     </Grid>
 </Window>
