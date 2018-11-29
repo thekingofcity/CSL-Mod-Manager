@@ -33,7 +33,8 @@
             <TextBlock Margin="5,2" Text="Search Title here..." Foreground="LightSteelBlue" Visibility="{Binding ElementName=SearchBox, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <TextBox x:Name="SearchBox" Background="Transparent" TextChanged="SearchBox_TextChanged"/>
         </Grid>
-        <Button Content="test" HorizontalAlignment="Left" Margin="712,0,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <Button x:Name="Export" Content="Export" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="Export_Click"/>
+        <Button x:Name="Import" Content="Import" HorizontalAlignment="Left" Margin="141,10,0,0" VerticalAlignment="Top" Width="75" Click="Import_Click"/>
 
     </Grid>
 </Window>

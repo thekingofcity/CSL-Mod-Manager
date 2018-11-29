@@ -1,0 +1,25 @@
+﻿<Window x:Class="CSL_Mod_Manager.Import"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CSL_Mod_Manager"
+        mc:Ignorable="d"
+        Title="Import" Height="450" Width="800">
+    <Grid>
+        <Label Content="Where is the backup?" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="BtnSelectFile" Content="..." HorizontalAlignment="Left" Margin="191,10,0,0" VerticalAlignment="Top" Width="20" Click="BtnSelectFile_Click"/>
+        <Grid Margin="10,41,10,0" Height="62" VerticalAlignment="Top">
+            <RadioButton x:Name="SteamCloudSave" Content="Steam Cloud Save" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Checked="SteamCloudSave_Checked"/>
+            <RadioButton Content="AppData" HorizontalAlignment="Left" Margin="129,37,0,0" VerticalAlignment="Top" IsEnabled="False"/>
+            <RadioButton x:Name="CustomLocation" Content="Custom Location" HorizontalAlignment="Left" Margin="200,37,0,0" VerticalAlignment="Top" Checked="CustomLocation_Checked"/>
+            <Label Content="Where is the save?" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top"/>
+        </Grid>
+        <Grid Height="54" Margin="10,108,10,0" VerticalAlignment="Top">
+            <Label Content="How would you like to perform the import?" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0.485,2.102"/>
+            <RadioButton x:Name="Temporary" Content="Temporary move" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Checked="SteamCloudSave_Checked"/>
+            <RadioButton x:Name="Permanent" Content="Permanent move" HorizontalAlignment="Left" Margin="123,31,0,0" VerticalAlignment="Top" IsEnabled="False"/>
+        </Grid>
+        <Button x:Name="ImportButton" Content="Import" Margin="710,392,10,10.5" Click="ImportButton_Click"/>
+    </Grid>
+</Window>

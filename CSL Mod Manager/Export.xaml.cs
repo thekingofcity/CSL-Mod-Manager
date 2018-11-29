@@ -74,6 +74,7 @@ namespace CSL_Mod_Manager
         {
             var SaveCount = SaveListBox.SelectedItems.Count;
             if (SaveCount == 0) {
+                // TODO: backup could be created without any save
                 MessageBoxResult result = MessageBox.Show("Please select save location first", "Error", MessageBoxButton.OK);
                 return;
             }
@@ -105,13 +106,15 @@ namespace CSL_Mod_Manager
                 // https://stackoverflow.com/questions/31292707/c-sharp-sevenzipsharp-adding-folder-to-new-existing-archive
                 compressor.CompressionMode = CompressionMode.Append;
                 compressor.CompressFiles(ExportFileName, SavePaths);
+
+                MessageBoxResult result = MessageBox.Show("Export complete", "Done", MessageBoxButton.OK);
             });
         }
 
         private void CustomLocation_Checked(object sender, RoutedEventArgs e)
         {
-            var SaveLocation = Utils.Util.SelectDir();
-
+            SaveLocation = Utils.Util.SelectDir() + "\\";
+            ScanSaveFolder(SaveLocation);
         }
     }
 }

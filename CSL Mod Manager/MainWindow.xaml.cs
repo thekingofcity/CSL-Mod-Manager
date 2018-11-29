@@ -351,13 +351,22 @@ namespace CSL_Mod_Manager
 
         #endregion
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Export_Click(object sender, RoutedEventArgs e)
         {
             Export export = new Export();
             // MultiThread variable access
             // http://www.cnblogs.com/hellohxs/p/9528505.html
             export.getWorkshopLocationHandler = _db.GetWorkshopLocation;
             export.Show();
+        }
+
+        private void Import_Click(object sender, RoutedEventArgs e)
+        {
+            Import import = new Import();
+            // MultiThread variable access
+            // http://www.cnblogs.com/hellohxs/p/9528505.html
+            import.getWorkshopLocationHandler = _db.GetWorkshopLocation;
+            import.Show();
         }
     }
 }
