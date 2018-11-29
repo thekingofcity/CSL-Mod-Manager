@@ -14,7 +14,7 @@
             <Label Content="Where is the save?" HorizontalAlignment="Left" Margin="10,6,0,0" Height="26" VerticalAlignment="Top"/>
         </Grid>
         <ListBox x:Name="SaveListBox" Margin="10,0,0,10.5" Height="335" VerticalAlignment="Bottom" SelectionMode="Multiple" HorizontalAlignment="Left" Width="300"/>
-        <Button x:Name="ExportButton" Content="Export" Margin="710,392,10,10.5" Click="ExportButton_Click"/>
+        <Button x:Name="ExportButton" Content="Export" Margin="0,0,10,10.5" Click="ExportButton_Click" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75"/>
 
     </Grid>
 </Window>

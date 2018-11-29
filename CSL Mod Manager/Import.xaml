@@ -20,6 +20,7 @@
             <RadioButton x:Name="Temporary" Content="Temporary move" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Checked="SteamCloudSave_Checked"/>
             <RadioButton x:Name="Permanent" Content="Permanent move" HorizontalAlignment="Left" Margin="123,31,0,0" VerticalAlignment="Top" IsEnabled="False"/>
         </Grid>
-        <Button x:Name="ImportButton" Content="Import" Margin="710,392,10,10.5" Click="ImportButton_Click"/>
+        <Button x:Name="ImportButton" Content="Import" Margin="0,0,10,10.5" Click="ImportButton_Click" HorizontalAlignment="Right" Width="75" Height="20" VerticalAlignment="Bottom"/>
+        <Button x:Name="RestoreButton" Content="Restore" Margin="0,0,10,10.5" Click="RestoreButton_Click" Visibility="Hidden"/>
     </Grid>
 </Window>

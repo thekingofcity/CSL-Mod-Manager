@@ -27,6 +27,9 @@ namespace CSL_Mod_Manager
         private string BackupLocation = string.Empty;
         private string SaveLocation = string.Empty;
         private string WorkshopLocation = string.Empty;
+        private string BackupWorkshopLocation = string.Empty;
+        // list containing saves in backup
+        List<string> saves = new List<string>();
 
         // MultiThread variable access
         // http://www.cnblogs.com/hellohxs/p/9528505.html
@@ -52,10 +55,11 @@ namespace CSL_Mod_Manager
             }
         }
 
-        private void ExtractBackup(String BackupLocation, String WorkshopLocation, String BakWorkshopLocation)
+        private void ExtractBackup(String BackupLocation, String WorkshopLocation_, String BackupWorkshopLocation_)
         {
             String PromptMsg;
-            WorkshopLocation += "\\";
+            WorkshopLocation = WorkshopLocation_ + "\\";
+            BackupWorkshopLocation = BackupWorkshopLocation_;
             Task.Run(() =>
             {
                 using (SevenZipExtractor tmp = new SevenZipExtractor(BackupLocation))
@@ -68,10 +72,8 @@ namespace CSL_Mod_Manager
                     //tmp.ExtractionFinished += new EventHandler((s, e) => { Console.WriteLine("Finished!"); });
                     tmp.ExtractArchive(WorkshopLocation);
                 }
-                
-                // list used in remove saves
-                List<string> saves = new List<string>();
 
+                saves.Clear();
                 var di = new DirectoryInfo(WorkshopLocation);
                 foreach (var fi in di.GetFiles("*.crp"))
                 {
@@ -88,34 +90,39 @@ namespace CSL_Mod_Manager
                     }
                 }
 
-                PromptMsg = "Import complete.\r\nPlease click OK when you want this backup be restored.";
+                PromptMsg = "Import complete.\r\nPlease click OK when you want this backup to be restored.";
                 MessageBoxResult result = MessageBox.Show(PromptMsg, "Done", MessageBoxButton.OK);
                 
-                // remove save
-                for (int i = 0; i < saves.Count; i++)
-                {
-                    if (File.Exists(saves[i]))
-                    {
-                        File.Delete(saves[i]);
-                    }
-                }
-
-                WorkshopLocation = WorkshopLocation.Substring(0, WorkshopLocation.Length - 1);
-                // delete workshop
-                if (Directory.Exists(WorkshopLocation))
-                {
-                    // true is recursive delete: 
-                    Directory.Delete(WorkshopLocation, true);
-                }
-
-                // restore original workshop
-                if (Directory.Exists(BakWorkshopLocation))
-                {
-                    Directory.Move(BakWorkshopLocation, WorkshopLocation);
-                }
-
-                result = MessageBox.Show("Temporary import complete", "Done", MessageBoxButton.OK);
             });
+        }
+
+        private void RestoreBackup()
+        {
+
+            // remove save
+            for (int i = 0; i < saves.Count; i++)
+            {
+                if (File.Exists(saves[i]))
+                {
+                    File.Delete(saves[i]);
+                }
+            }
+
+            WorkshopLocation = WorkshopLocation.Substring(0, WorkshopLocation.Length - 1);
+            // delete import workshop
+            if (Directory.Exists(WorkshopLocation))
+            {
+                // true is recursive delete: 
+                Directory.Delete(WorkshopLocation, true);
+            }
+
+            // restore original workshop
+            if (Directory.Exists(BackupWorkshopLocation))
+            {
+                Directory.Move(BackupWorkshopLocation, WorkshopLocation);
+            }
+
+            MessageBoxResult result = MessageBox.Show("Temporary import complete", "Done", MessageBoxButton.OK);
         }
 
         private void ImportButton_Click(object sender, RoutedEventArgs e)
@@ -141,8 +148,17 @@ namespace CSL_Mod_Manager
                 return;
             }
 
+            ImportButton.Visibility = Visibility.Hidden;
+            RestoreButton.Visibility = Visibility.Visible;
             ExtractBackup(BackupLocation, WorkshopLocation, BakWorkshopLocation);
 
+        }
+        private void RestoreButton_Click(object sender, RoutedEventArgs e)
+        {
+            RestoreButton.Visibility = Visibility.Hidden;
+            ImportButton.Visibility = Visibility.Visible;
+            RestoreBackup();
+            return;
         }
 
         private void SteamCloudSave_Checked(object sender, RoutedEventArgs e)
