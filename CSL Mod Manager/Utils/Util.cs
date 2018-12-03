@@ -8,6 +8,10 @@ namespace CSL_Mod_Manager.Utils
 {
     public static class Util
     {
+        /// <summary>
+        /// Popup a directory selection window
+        /// </summary>
+        /// <returns>the selected path or Empty(cancel)</returns>
         public static string SelectDir()
         {
             var res = string.Empty;
@@ -69,6 +73,10 @@ namespace CSL_Mod_Manager.Utils
             return length;
         }
 
+        /// <summary>
+        /// download picture asynchronously since it cost a lot of time
+        /// </summary>
+        /// <param name="dpv_obj">a struct of argvs</param>
         public static void AsyncDownloadPic(object dpv_obj)
         {
             var dpv = (DownloadPicArgv)dpv_obj;
@@ -106,6 +114,11 @@ namespace CSL_Mod_Manager.Utils
             }
         }
 
+        /// <summary>
+        /// automatically get the workshop directory via registry
+        /// </summary>
+        /// <param name="appid"></param>
+        /// <returns></returns>
         public static string GetWorkShopDir(int appid)
         {
             foreach (var k in SteamClientHelper.GetAllAppidInWorkshop())

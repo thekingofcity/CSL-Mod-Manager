@@ -21,7 +21,7 @@ namespace CSL_Mod_Manager
     public partial class MainWindow
     {
         public const int DefaultAppid = 255710;
-        // MainLogic ML;
+        
         private DataTable _dt;
         public Database _db;
 
@@ -36,17 +36,36 @@ namespace CSL_Mod_Manager
             InitializeDB();
         }
 
+        /// <summary>
+        /// click function for "Select Directory" button
+        /// After get the location path, it will drop the current database
+        /// and scan the folder to fill the database asynchronously
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnSelectDir(object sender, RoutedEventArgs e)
         {
             var workshopLocation = Utils.Util.SelectDir();
             LoadDB(workshopLocation);
         }
 
+        /// <summary>
+        /// DEPRECATED
+        /// REASON: Since when the code change the database, it will call RefreshTable. The button is no longer needed.
+        /// click function for "Refresh Table" button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnRefreshTable(object sender, RoutedEventArgs e)
         {
             RefreshTable();
         }
 
+        /// <summary>
+        /// bind datagridview to new datatable source
+        /// When the code change the database, it should call this
+        /// </summary>
+        /// <param name="search">null to select *, not null to select * where Title like '%{search}%'</param>
         private void RefreshTable(string search = null)
         {
             if (search != null)
@@ -61,6 +80,13 @@ namespace CSL_Mod_Manager
             }
         }
 
+        /// <summary>
+        /// click function for "Download Content and Analyze" button
+        /// 1. find everything selected
+        /// 2. call the DownloadAndAnalyze asynchronously
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnDownloadAndAnalyze(object sender, RoutedEventArgs e)
         {
             // https://www.codeproject.com/Questions/119505/Get-Selected-items-in-a-WPF-datagrid
@@ -78,6 +104,12 @@ namespace CSL_Mod_Manager
             });
         }
 
+        /// <summary>
+        /// display the picture of mod when selection changed
+        /// ONLY DISPLAY THE FIRST SELECTED ITEM
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DataGridView1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // https://bbs.csdn.net/topics/391924207
@@ -98,6 +130,16 @@ namespace CSL_Mod_Manager
             }
         }
 
+        /// <summary>
+        /// DEPRECATED
+        /// REASON: It is not a main feature and may cause data loss
+        /// click function for "Delete Directory" button
+        /// 1. find everything selected
+        /// 2. delete directory and row in database 
+        /// 3. refresh table
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Delete_Directory_Click(object sender, RoutedEventArgs e)
         {
             // https://www.codeproject.com/Questions/119505/Get-Selected-items-in-a-WPF-datagrid
@@ -113,11 +155,21 @@ namespace CSL_Mod_Manager
             RefreshTable();
         }
 
+        /// <summary>
+        /// open the repo on github
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Label_MouseDown(object sender, MouseButtonEventArgs e)
         {
             System.Diagnostics.Process.Start(@"https://github.com/thekingofcity/CSL-Mod-Manager");
         }
 
+        /// <summary>
+        /// Everytime the text of search box changed, it will find the mods that like the text
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             RefreshTable(SearchBox.Text);
@@ -126,7 +178,12 @@ namespace CSL_Mod_Manager
         #endregion
 
         #region MainLogic
-
+        
+        /// <summary>
+        /// WILL DROP DATABASE
+        /// the initialization of database(drop and scan)
+        /// </summary>
+        /// <param name="workshopLocation"></param>
         private void LoadDB(string workshopLocation)
         {
             if (Directory.Exists(workshopLocation))
@@ -138,12 +195,21 @@ namespace CSL_Mod_Manager
                 });
             }
         }
-
+   
+        /// <summary>
+        /// delegate function
+        /// update status label
+        /// </summary>
+        /// <param name="status"></param>
         private void StatusUpdate(string status)
         {
             Status.Content = status;
         }
 
+        /// <summary>
+        /// will be used on startup
+        /// check if db exist and create or read
+        /// </summary>
         private void InitializeDB()
         {
             var fileExist = File.Exists(@"database.sqlite");
@@ -151,7 +217,6 @@ namespace CSL_Mod_Manager
             {
                 _db = new Database();
                 _db.CreateTable();
-                RefreshTable();
                 LoadDB(Utils.Util.GetWorkShopDir(DefaultAppid));
             }
             else
@@ -161,6 +226,9 @@ namespace CSL_Mod_Manager
             }
         }
 
+        /// <summary>
+        /// delete the db file and recreate it
+        /// </summary>
         private void OverrideDB()
         {
             var fileExist = File.Exists(@"database.sqlite");
@@ -169,6 +237,7 @@ namespace CSL_Mod_Manager
                 // full initialize
                 // delete db file and recreate
                 _db.CloseDB();
+                // release the file
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 File.Delete(@"database.sqlite");
@@ -178,6 +247,11 @@ namespace CSL_Mod_Manager
             }
         }
 
+        /// <summary>
+        /// drop and scan the database asynchronously
+        /// update UI through delegate function
+        /// </summary>
+        /// <param name="workshopLocationObj"></param>
         private void RefreshDB(object workshopLocationObj)
         {
             var workshopLocation = (string)workshopLocationObj;
@@ -186,10 +260,7 @@ namespace CSL_Mod_Manager
             try
             {
                 var di = new DirectoryInfo(workshopLocation);
-
-                // Get only subdirectories that contain the letter "p."
                 var dirs = di.GetDirectories(@"*");
-
                 var ModSize = dirs.Length;
                 var index = 0;
 
@@ -199,6 +270,7 @@ namespace CSL_Mod_Manager
                     _db.InsertNewMod(long.Parse(diNext.Name), Utils.Util.GetFilesSize(diNext));
 
                     var status = $@"{index} of {ModSize}";
+                    // update the UI in progress
                     Dispatcher.BeginInvoke(
                         System.Windows.Threading.DispatcherPriority.Normal,
                         new AsyncSelectDirUIDelegate(StatusUpdate),
@@ -219,6 +291,11 @@ namespace CSL_Mod_Manager
                 null);
         }
 
+        /// <summary>
+        /// DEPRECATED
+        /// REASON: see Delete_Directory_Click for details
+        /// </summary>
+        /// <param name="ids"></param>
         private void DeleteDirectory(IReadOnlyList<string> ids)
         {
             var l = ids.Count;
@@ -234,6 +311,11 @@ namespace CSL_Mod_Manager
             }
         }
 
+        /// <summary>
+        /// select * from table
+        /// and return DataTable for DataGridView source bind
+        /// </summary>
+        /// <returns></returns>
         private DataTable GetDB()
         {
             var dt = new DataTable();
@@ -241,6 +323,12 @@ namespace CSL_Mod_Manager
             return dt;
         }
 
+        /// <summary>
+        /// select * from table where Title like '%{search}%'
+        /// and return DataTable for DataGridView source bind
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         private DataTable GetSpecificRowsFromDB(string search)
         {
             var dt = new DataTable();
@@ -248,6 +336,11 @@ namespace CSL_Mod_Manager
             return dt;
         }
         
+        /// <summary>
+        /// Download the workshop page and update database with mod details
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <param name="localPath"></param>
         private void DownloadAndAnalyze(string[] ids, string localPath)
         {
             // https://www.cnblogs.com/ibeisha/p/threadpool.html
@@ -261,7 +354,6 @@ namespace CSL_Mod_Manager
             };
 
             var l = ids.Length;
-            var lStr = l.ToString();
             for (var i = 0; i < l; i++)
             {
                 var pageUrl = $@"https://steamcommunity.com/sharedfiles/filedetails/?id={ids[i]}&searchtext=";
@@ -312,7 +404,7 @@ namespace CSL_Mod_Manager
 
                 _db.UpdateMod(ids[i], title, tags, description, screenshots);
 
-                var status = $@"{i} of {lStr}";
+                var status = $@"{i} of {l}";
                 Dispatcher.BeginInvoke(
                     System.Windows.Threading.DispatcherPriority.Normal,
                     new AsyncSelectDirUIDelegate(StatusUpdate),

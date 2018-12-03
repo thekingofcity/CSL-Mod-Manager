@@ -90,7 +90,7 @@ namespace CSL_Mod_Manager
                     }
                 }
 
-                PromptMsg = "Import complete.\r\nPlease click OK when you want this backup to be restored.";
+                PromptMsg = "Import complete.\r\nPlease click Restore when you want this backup to be restored.";
                 MessageBoxResult result = MessageBox.Show(PromptMsg, "Done", MessageBoxButton.OK);
                 
             });
