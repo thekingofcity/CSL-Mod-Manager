@@ -55,11 +55,10 @@ namespace CSL_Mod_Manager
             }
         }
 
-        private void ExtractBackup(String BackupLocation, String WorkshopLocation_, String BackupWorkshopLocation_)
+        private void ExtractBackup(String BackupLocation, String WorkshopLocation_)
         {
             String PromptMsg;
             WorkshopLocation = WorkshopLocation_ + "\\";
-            BackupWorkshopLocation = BackupWorkshopLocation_;
             Task.Run(() =>
             {
                 using (SevenZipExtractor tmp = new SevenZipExtractor(BackupLocation))
@@ -90,7 +89,8 @@ namespace CSL_Mod_Manager
                     }
                 }
 
-                PromptMsg = "Import complete.\r\nPlease click Restore when you want this backup to be restored.";
+                //PromptMsg = "Import complete.\r\nPlease click Restore when you want this backup to be restored.";
+                PromptMsg = "Import complete.";
                 MessageBoxResult result = MessageBox.Show(PromptMsg, "Done", MessageBoxButton.OK);
                 
             });
@@ -137,21 +137,44 @@ namespace CSL_Mod_Manager
                 return;
             }
 
-            String BakWorkshopLocation = WorkshopLocation + "_bak";
-
-            if (Directory.Exists(WorkshopLocation))
+            if (ImportMode == 0)
             {
-                Directory.Move(WorkshopLocation, BakWorkshopLocation);
+
+                String BakWorkshopLocation = WorkshopLocation + "_bak";
+
+                if (Directory.Exists(WorkshopLocation))
+                {
+                    Directory.Move(WorkshopLocation, BakWorkshopLocation);
+                }
+                else
+                {
+                    return;
+                }
+
+                BackupWorkshopLocation = BakWorkshopLocation;
+                ImportButton.Visibility = Visibility.Hidden;
+                RestoreButton.Visibility = Visibility.Visible;
+                ExtractBackup(BackupLocation, WorkshopLocation);
+
             }
             else
             {
-                return;
+                MessageBoxResult result = MessageBox.Show("THIS WILL DELETE ALL YOUR CURRENT WORKSHOP FILES.\r\nSTEAM SHOULD UPDATE WORKSHOP TO SUBSCRIBED AFTER NEXT RESTART", "Warning", MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.OK)
+                {
+
+                    if (Directory.Exists(WorkshopLocation))
+                    {
+                        Directory.Delete(WorkshopLocation, true);
+                    }
+                    else
+                    {
+                        return;
+                    }
+
+                    ExtractBackup(BackupLocation, WorkshopLocation);
+                }
             }
-
-            ImportButton.Visibility = Visibility.Hidden;
-            RestoreButton.Visibility = Visibility.Visible;
-            ExtractBackup(BackupLocation, WorkshopLocation, BakWorkshopLocation);
-
         }
         private void RestoreButton_Click(object sender, RoutedEventArgs e)
         {
@@ -183,6 +206,16 @@ namespace CSL_Mod_Manager
         private void CustomLocation_Checked(object sender, RoutedEventArgs e)
         {
             SaveLocation = Utils.Util.SelectDir() + "\\";
+        }
+
+        private void Permanent_Checked(object sender, RoutedEventArgs e)
+        {
+            ImportMode = 1;
+        }
+
+        private void Temporary_Checked(object sender, RoutedEventArgs e)
+        {
+            ImportMode = 0;
         }
     }
 }

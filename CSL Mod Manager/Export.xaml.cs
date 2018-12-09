@@ -56,6 +56,7 @@ namespace CSL_Mod_Manager
             if (ActiveSteamID == 0)
             {
                 MessageBoxResult result = MessageBox.Show("No Active Steam User Found", "Error", MessageBoxButton.OK);
+                SteamCloudSave.IsChecked = false;
                 return;
             }
 
@@ -73,18 +74,21 @@ namespace CSL_Mod_Manager
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
             var SaveCount = SaveListBox.SelectedItems.Count;
-            if (SaveCount == 0) {
-                // TODO: backup could be created without any save
-                MessageBoxResult result = MessageBox.Show("Please select save location first", "Error", MessageBoxButton.OK);
-                return;
-            }
-
             var SavePaths = new string[SaveCount];
-            for (int i = 0; i < SaveCount; i++)
+            if (SaveCount == 0) {
+                // If there is no save selected
+                //MessageBoxResult result = MessageBox.Show("Please select save location first", "Error", MessageBoxButton.OK);
+                //return;
+            }
+            else
             {
-                var SavePath = SaveListBox.SelectedItems[i].ToString();
-                SavePath = System.Text.RegularExpressions.Regex.Split(SavePath, "    ")[0];
-                SavePaths[i] = SaveLocation + SavePath;
+                // Get every save to the SavePaths
+                for (int i = 0; i < SaveCount; i++)
+                {
+                    var SavePath = SaveListBox.SelectedItems[i].ToString();
+                    SavePath = System.Text.RegularExpressions.Regex.Split(SavePath, "    ")[0];
+                    SavePaths[i] = SaveLocation + SavePath;
+                }
             }
 
             Task.Run(() =>
@@ -104,8 +108,11 @@ namespace CSL_Mod_Manager
 
                 // append files to 7z
                 // https://stackoverflow.com/questions/31292707/c-sharp-sevenzipsharp-adding-folder-to-new-existing-archive
-                compressor.CompressionMode = CompressionMode.Append;
-                compressor.CompressFiles(ExportFileName, SavePaths);
+                for(int i = 0; i < SaveCount; i++)
+                {
+                    compressor.CompressionMode = CompressionMode.Append;
+                    compressor.CompressFiles(ExportFileName, SavePaths[i]);
+                }
 
                 MessageBoxResult result = MessageBox.Show("Export complete", "Done", MessageBoxButton.OK);
             });

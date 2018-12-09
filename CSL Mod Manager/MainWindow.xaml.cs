@@ -184,7 +184,7 @@ namespace CSL_Mod_Manager
         /// the initialization of database(drop and scan)
         /// </summary>
         /// <param name="workshopLocation"></param>
-        private void LoadDB(string workshopLocation)
+        public void LoadDB(string workshopLocation)
         {
             if (Directory.Exists(workshopLocation))
             {

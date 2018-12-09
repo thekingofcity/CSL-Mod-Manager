@@ -17,10 +17,10 @@
         </Grid>
         <Grid Height="54" Margin="10,108,10,0" VerticalAlignment="Top">
             <Label Content="How would you like to perform the import?" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0.485,2.102"/>
-            <RadioButton x:Name="Temporary" Content="Temporary move" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Checked="SteamCloudSave_Checked"/>
-            <RadioButton x:Name="Permanent" Content="Permanent move" HorizontalAlignment="Left" Margin="123,31,0,0" VerticalAlignment="Top" IsEnabled="False"/>
+            <RadioButton x:Name="Temporary" Content="Temporary move" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Checked="Temporary_Checked"/>
+            <RadioButton x:Name="Permanent" Content="Permanent move" HorizontalAlignment="Left" Margin="123,31,0,0" VerticalAlignment="Top" Checked="Permanent_Checked"/>
         </Grid>
         <Button x:Name="ImportButton" Content="Import" Margin="0,0,10,10.5" Click="ImportButton_Click" HorizontalAlignment="Right" Width="75" Height="20" VerticalAlignment="Bottom"/>
-        <Button x:Name="RestoreButton" Content="Restore" Margin="0,0,10,10.5" Click="RestoreButton_Click" Visibility="Hidden"/>
+        <Button x:Name="RestoreButton" Content="Restore" Margin="0,0,10,10.5" Click="RestoreButton_Click" HorizontalAlignment="Right" Width="75" Height="20" VerticalAlignment="Bottom" Visibility="Hidden"/>
     </Grid>
 </Window>
